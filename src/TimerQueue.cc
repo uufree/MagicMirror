@@ -60,18 +60,36 @@ namespace unet
         
         TimerQueue::~TimerQueue()
         {
-            ::close(timefd);
-            timerMap.clear();
+            if(started)
+            {
+                ::close(timefd);
+                timerMap.clear();
+                eraseChannelCallBack(timefd);
+            }
         }
 
         void TimerQueue::addTimer(TimerPtr&& timer_)
         {
-            Timestamp now;
-            now.addTime(timer_->getRepeatTime());
+            if(started)
+            {
+                Timestamp now;
+                now.addTime(timer_->getRepeatTime());
             
-            if(timerMap.size() > 0)
-            {//setTimer
-                if(now < timerMap.begin()->first)
+                if(timerMap.size() > 0)
+                {//setTimer
+                    if(now < timerMap.begin()->first)
+                    {
+                        struct itimerspec newSpec;
+                        bzero(&newSpec,sizeof(newSpec));
+                        struct itimerspec oldSpec;
+                        bzero(&oldSpec,sizeof(oldSpec));
+                        newSpec.it_value = howMuchTimeFromNow(now);
+                
+                        if(::timerfd_settime(timefd,0,&newSpec,&oldSpec) < 0)
+                            unet::handleError(errno);
+                    }
+                }
+                else if(timerMap.size() == 0)
                 {
                     struct itimerspec newSpec;
                     bzero(&newSpec,sizeof(newSpec));
@@ -81,33 +99,36 @@ namespace unet
                 
                     if(::timerfd_settime(timefd,0,&newSpec,&oldSpec) < 0)
                         unet::handleError(errno);
-                }
-            }
-            else if(timerMap.size() == 0)
-            {
-                struct itimerspec newSpec;
-                bzero(&newSpec,sizeof(newSpec));
-                struct itimerspec oldSpec;
-                bzero(&oldSpec,sizeof(oldSpec));
-                newSpec.it_value = howMuchTimeFromNow(now);
-                
-                if(::timerfd_settime(timefd,0,&newSpec,&oldSpec) < 0)
-                    unet::handleError(errno);
-            }
-            else
-            {};
+                }   
+                else
+                {};
 
-            {
-                unet::thread::MutexLockGuard guard(mutex);
-                timerMap.insert({now,timer_});
+                {
+                    unet::thread::MutexLockGuard guard(mutex);
+                    timerMap.insert({now,timer_});
+                }
             }
         }        
 
         void TimerQueue::addTimer(Timestamp&& time_,TimerPtr&& ptr)
         {
-            if(timerMap.size() > 0)
-            {//setTimer
-                if(time_ < timerMap.begin()->first)
+            if(started)
+            {
+                if(timerMap.size() > 0)
+                {//setTimer
+                    if(time_ < timerMap.begin()->first)
+                    {
+                        struct itimerspec newSpec;
+                        bzero(&newSpec,sizeof(newSpec));
+                        struct itimerspec oldSpec;
+                        bzero(&oldSpec,sizeof(oldSpec));
+
+                        newSpec.it_value = howMuchTimeFromNow(time_);
+                        if(::timerfd_settime(timefd,0,&newSpec,&oldSpec) < 0)
+                            unet::handleError(errno);
+                    }
+                }
+                else if(timerMap.size() == 0)
                 {
                     struct itimerspec newSpec;
                     bzero(&newSpec,sizeof(newSpec));
@@ -118,25 +139,14 @@ namespace unet
                     if(::timerfd_settime(timefd,0,&newSpec,&oldSpec) < 0)
                         unet::handleError(errno);
                 }
-            }
-            else if(timerMap.size() == 0)
-            {
-                struct itimerspec newSpec;
-                bzero(&newSpec,sizeof(newSpec));
-                struct itimerspec oldSpec;
-                bzero(&oldSpec,sizeof(oldSpec));
-
-                newSpec.it_value = howMuchTimeFromNow(time_);
-                if(::timerfd_settime(timefd,0,&newSpec,&oldSpec) < 0)
-                    unet::handleError(errno);
-            }
-            else
-            {};
+                else
+                {};
 
 
-            {
-                unet::thread::MutexLockGuard guard(mutex);
-                timerMap.insert({time_,ptr});
+                {
+                    unet::thread::MutexLockGuard guard(mutex);
+                    timerMap.insert({time_,ptr});
+                }
             }
         }
 
@@ -177,12 +187,16 @@ namespace unet
             ChannelPtr channel(new net::Channel(timefd,net::CLOCK));
             channel->setReadCallBack(std::bind(&TimerQueue::handleRead,this));
             
+            started = true;
             insertChannelCallBack(std::move(channel));
         }
 
         void TimerQueue::stop()
         {
+            started = false;
             eraseChannelCallBack(timefd);
+            ::close(timefd);
+            timerMap.clear();
         }
 
     }

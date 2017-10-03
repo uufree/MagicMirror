@@ -62,6 +62,12 @@ namespace unet
             
             eventMap.erase(fd);
         }
+
+        void EventMap::clear()
+        {
+            thread::MutexLockGuard guard(mutex);
+            eventMap.clear();
+        }
     }
 }
 

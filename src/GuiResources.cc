@@ -19,6 +19,9 @@ GuiResources::GuiResources(GuiResources&& lhs) :
 
 GuiResources& GuiResources::operator=(GuiResources&& lhs)
 {
+    if(system.isStart())
+        system.stop();
+
     system = std::move(lhs.system);
     clock = std::move(lhs.clock);
 
@@ -38,6 +41,7 @@ void GuiResources::ClockUpdate()
 
 void GuiResources::start()
 {
+    system.start();
     {//clock
         unet::time::TimerPtr ptr(new unet::time::Timer(true,1));
         ptr->setTimeCallBack(std::bind(&GuiResources::ClockUpdate,this));

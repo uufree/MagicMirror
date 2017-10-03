@@ -5,6 +5,8 @@
 	> Created Time: 2017年08月16日 星期三 21时06分58秒
  ************************************************************************/
 
+/*在此声明一点：start与stop具有清空缓存的语义*/
+
 #include"TimerEventSystem.h"
 
 namespace unet
@@ -17,7 +19,8 @@ namespace unet
             epoller(),
             eventLoop(),
             timerQueue(),
-            thread()
+            thread(),
+            started(false)
         {
             eventLoop.setGetActiveChannelsCallBack(std::bind(&TimerEventSystem::GetActiveChannels,this));
             
@@ -25,6 +28,7 @@ namespace unet
             timerQueue.setEraseChannelCallBack(std::bind(&TimerEventSystem::EraseChannel,this,std::placeholders::_1));
             
             thread.setThreadCallBack(std::bind(&TimerEventSystem::ThreadStart,this));
+            thread.start();
         };
 
         TimerEventSystem::TimerEventSystem(TimerEventSystem&& lhs) :
@@ -33,7 +37,8 @@ namespace unet
             epoller(std::move(lhs.epoller)),
             eventLoop(std::move(lhs.eventLoop)),
             timerQueue(std::move(lhs.timerQueue)),
-            thread(std::move(lhs.thread))
+            thread(std::move(lhs.thread)),
+            started(false)
         {
             eventLoop.setGetActiveChannelsCallBack(std::bind(&TimerEventSystem::GetActiveChannels,this));
             
@@ -44,30 +49,45 @@ namespace unet
         };
 
         TimerEventSystem& TimerEventSystem::operator=(TimerEventSystem&& lhs)
-        {
+        {   
+            if(lhs.isStart())
+                lhs.stop();
+
             channelMap = std::move(lhs.channelMap);
             eventMap = std::move(lhs.eventMap);
             epoller = std::move(lhs.epoller);
             eventLoop = std::move(lhs.eventLoop);
             timerQueue = std::move(lhs.timerQueue);
             thread = std::move(lhs.thread);
+            started = false;
 
             return *this;
         };
         
         TimerEventSystem::~TimerEventSystem()
-        {};
+        {
+            if(started)
+            {
+                eventLoop.setQuit();
+                timerQueue.stop();
+                channelMap.clear();
+                eventMap.clear();
+                thread.join();
+            }
+        };
 
         void TimerEventSystem::start()
         {
-            thread.start();
-//            ThreadStart();              
+            started = true;
+            timerQueue.start();
         }
 
         void TimerEventSystem::stop()
         {
             timerQueue.stop();
-            eventLoop.setQuit();
+            channelMap.clear();
+            eventMap.clear();
+            started = false;
         }
 
         void TimerEventSystem::addTimer(time::TimerPtr&& timer)
@@ -75,6 +95,7 @@ namespace unet
             timerQueue.addTimer(std::move(timer));
         }
 
+//private:
         void TimerEventSystem::InsertChannel(ChannelPtr&& channel)
         {
             channel->setCloseCallBack(std::bind(&TimerEventSystem::EraseChannel,this,std::placeholders::_1));
@@ -95,7 +116,6 @@ namespace unet
         
         void TimerEventSystem::ThreadStart()
         {
-            timerQueue.start();
             eventLoop.loop();
         }
     }

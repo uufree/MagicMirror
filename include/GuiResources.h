@@ -18,7 +18,7 @@ class GuiResources final
         GuiResources();
         GuiResources(const GuiResources& lhs) = delete;
         GuiResources(GuiResources&& lhs);
-        GuiResources& operator=(const GuiResources& lhs);
+        GuiResources& operator=(const GuiResources& lhs) = delete;
         GuiResources& operator=(GuiResources&& lhs);
         ~GuiResources();
         

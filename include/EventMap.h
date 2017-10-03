@@ -44,6 +44,7 @@ namespace unet
 
                 void insert(int fd,int event_,int epollfd);
                 void erase(int fd,int epollfd);
+                void clear();
 
             private:
                 thread::MutexLock mutex;

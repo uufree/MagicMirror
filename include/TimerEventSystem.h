@@ -32,7 +32,9 @@ namespace unet
                 void start();
                 void stop();
                 void addTimer(time::TimerPtr&& timer);
-                
+                bool isStart()
+                {return started;}
+
             private:
                 void InsertChannel(ChannelPtr&& channel);
                 void EraseChannel(int index);
@@ -47,6 +49,8 @@ namespace unet
                 EventLoop eventLoop;
                 time::TimerQueue timerQueue;
                 thread::Thread thread;
+
+                bool started;
         };
     }
 }

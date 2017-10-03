@@ -13,13 +13,11 @@ namespace unet
     namespace net
     {
         EventLoop::EventLoop() : 
-            looping(false),
             quit(false),
             eventHandling(false)
         {};
 
         EventLoop::EventLoop(EventLoop&& lhs) : 
-            looping(lhs.looping),
             quit(lhs.quit),
             eventHandling(lhs.eventHandling),
             getActiveChannelsCallBack(std::move(lhs.getActiveChannelsCallBack))
@@ -27,7 +25,6 @@ namespace unet
 
         EventLoop& EventLoop::operator=(EventLoop&& lhs)
         {
-            looping = lhs.looping;
             quit = lhs.quit;
             eventHandling = lhs.eventHandling;
 
@@ -41,7 +38,6 @@ namespace unet
 
         void EventLoop::loop()
         {
-            looping = true;
             quit = false;
             
             if(!getActiveChannelsCallBack)
@@ -54,6 +50,8 @@ namespace unet
             {
                 getActiveChannelsCallBack();
             }
+            
+            quit = true;
         }
     }
 }

@@ -39,7 +39,6 @@ namespace unet
                 ~EventLoop();
 
                 void swap(EventLoop& lhs) = delete;
-                
                 void loop();
                 
                 void setQuit()
@@ -49,7 +48,6 @@ namespace unet
                 {getActiveChannelsCallBack = lhs;};
             
             private:
-                bool looping;
                 bool quit;
                 bool eventHandling;
         

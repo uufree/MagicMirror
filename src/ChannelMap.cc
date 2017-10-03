@@ -46,6 +46,12 @@ namespace unet
             thread::MutexLockGuard guard(mutex);
             channelMap.erase(fd);
         }
+
+        void ChannelMap::clear()
+        {
+            thread::MutexLockGuard guard(mutex);
+            channelMap.clear();
+        }
     }
 }
 

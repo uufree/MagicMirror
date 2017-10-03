@@ -43,12 +43,11 @@ namespace unet
         {
             eventList.clear();
             int activeEvents = ::epoll_wait(epollfd,&*eventList.begin(),65536,-1);
-
             if(activeEvents > 0)
                 getActiveEvents(activeEvents,channelMap);
             else if(activeEvents == 0)
             {
-
+                return;
             }
             else
             {

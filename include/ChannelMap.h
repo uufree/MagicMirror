@@ -52,7 +52,7 @@ namespace unet
                 void insert(const ChannelPtr& channel);
                 void insert(int fd,ChannelType type);
                 void erase(int fd);
-                
+                void clear();                
 
             private:
                 thread::MutexLock mutex;
