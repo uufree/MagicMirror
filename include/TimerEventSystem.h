@@ -9,11 +9,11 @@
 #define _TIMEREVENTSYSTEM_H
 
 #include"TimerQueue.h"
-#include"../unetComponent/ChannelMap.h"
-#include"../unetComponent/Thread.h"
-#include"../unetComponent/Epoller.h"
-#include"../unetComponent/EventLoop.h"
-#include"../unetComponent/EventMap.h"
+#include"ChannelMap.h"
+#include"Thread.h"
+#include"Epoller.h"
+#include"EventLoop.h"
+#include"EventMap.h"
 
 namespace unet
 {

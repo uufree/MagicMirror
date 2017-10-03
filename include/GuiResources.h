@@ -8,9 +8,9 @@
 #ifndef _GUIRESOURCES_H
 #define _GUIRESOURCES_H
 
-#include"./GUI/clock/Clock.h"
-#include"./unetComponent/Mutex.h"
-#include"./timerSystem/TimerEventSystem.h"
+#include"Clock.h"
+#include"Mutex.h"
+#include"TimerEventSystem.h"
 
 class GuiResources final
 {

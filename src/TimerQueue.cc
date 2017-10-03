@@ -6,7 +6,7 @@
  ************************************************************************/
 
 #include"TimerQueue.h"
-#include"../unetComponent/error.h"
+#include"error.h"
 
 
 namespace unet
@@ -142,7 +142,7 @@ namespace unet
 
         void TimerQueue::handleRead()
         {
-            ::read(timefd,NULL,0);
+            ::read(timefd,nullptr,0);
             
             TimestampList list;
             Timestamp now;
