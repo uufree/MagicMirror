@@ -12,8 +12,15 @@
 #include<opencv2/opencv.hpp>
 
 #include"GuiResources.h"
+#include"TimerEventSystem.h"
 
 using namespace cv;
+
+void printHello()
+{
+    std::cout << "Hello" << std::endl;
+}
+
 
 int main(int argc,char** argv)
 {
@@ -36,5 +43,18 @@ int main(int argc,char** argv)
         img.setTo(Scalar(0,0,0));
     }
 
+    
+//system.stop()会引起double free，有时间继续修改
+/*
+    unet::net::TimerEventSystem system;
+    system.start();
+    
+    unet::time::TimerPtr timer(new unet::time::Timer(true,1));
+    timer->setTimeCallBack(std::bind(&printHello));
+    system.addTimer(std::move(timer));
+    
+    ::sleep(3);
+    system.stop();
+*/
     return 0;
 }
