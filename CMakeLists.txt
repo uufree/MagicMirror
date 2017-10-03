@@ -1,8 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(MagicMirror)
 
-OPTION(WITH_DEBUG "whether to build with debug" OFF)
-OPTION(PRINT_TIME "whether to print time" OFF)
+OPTION(WITH_DEBUG "whether to build with debug" ON)
+OPTION(PRINT_TIME "whether to print time" ON)
 OPTION(USE_CPP11 "whether to use cpp11" ON)
 OPTION(BUILD_LIBRARY "whether to build library" ON)
 
