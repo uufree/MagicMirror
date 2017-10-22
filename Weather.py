@@ -46,10 +46,9 @@ def write_data(data, name):
     with  open(file_name, 'a') as f:
             f_csv = csv.writer(f)
             f_csv.writerows(data)
-#            print(data)
+            print(data)
 
 if __name__ == '__main__':
     html_doc = get_html('http://www.weather.com.cn/weather/101190802.shtml')
-#    print(html_doc)
     result = get_data(html_doc)
     write_data(result, 'weather.csv')

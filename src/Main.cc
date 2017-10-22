@@ -14,6 +14,8 @@
 #include"GuiResources.h"
 #include"TimerEventSystem.h"
 
+
+
 using namespace cv;
 
 void printHello()
@@ -38,6 +40,13 @@ int main(int argc,char** argv)
         std::cout << "getClock_MouthAndDays: " << resources.getClock_MouthAndDays() << std::endl;
         putText(img,resources.getClock_HourAndMinutes(),Point(100,800),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
         std::cout << "getClock_HourAndMinutes: " << resources.getClock_HourAndMinutes() << std::endl;
+        putText(img,resources.getWeather(),Point(1200,200),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
+        std::cout << "weather: " << resources.getWeather() << std::endl; 
+        putText(img,resources.getBook(),Point(1200,800),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
+        std::cout << "weather: " << resources.getWeather() << std::endl; 
+        putText(img,resources.getPhone(),Point(100,200),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
+        std::cout << "weather: " << resources.getWeather() << std::endl; 
+        
         imshow("home",img);
         waitKey(999);
         img.setTo(Scalar(0,0,0));

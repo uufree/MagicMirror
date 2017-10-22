@@ -28,15 +28,32 @@ class GuiResources final
         const std::string&  getClock_MouthAndDays()
         {return clock.getMouthAndDays();};
         
+        const std::string& getWeather()
+        {return weather;};
+
+        const std::string& getBook()
+        {return book;};                                                           
+        
+        const std::string& getPhone()
+        {return phone;};
+
         void start();
 
     private:
         void ClockUpdate();
-
+        void WeatherUpdate();
+        void BookUpdate();
+        void PhoneUpdate();
     private:
         unet::thread::MutexLock lock;
         unet::net::TimerEventSystem system;
         utime::UClock clock;
+        
+        std::string book;
+        std::string weather;
+        std::string phone;
 };
+
+void getWeatherMassage();
 
 #endif
