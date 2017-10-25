@@ -38,14 +38,14 @@ namespace utime
         
             void update();
         
-        private:
-            void split(const std::string& lhs,const std::string& rhs,std::vector<std::string>& vecStr);
 
         private:
             std::string hourAndMinutes;
             std::string mouthAndDays;
             std::vector<std::string> strList;
     };
+    
+    void split(const std::string& lhs,const std::string& rhs,std::vector<std::string>& vecStr);
 
 }
 

@@ -1,0 +1,3 @@
+/home/uuchen/magicMirror/build/CMakeFiles/edit_cache.dir
+/home/uuchen/magicMirror/build/CMakeFiles/rebuild_cache.dir
+/home/uuchen/magicMirror/build/CMakeFiles/MagicMirror.dir

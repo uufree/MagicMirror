@@ -11,7 +11,7 @@
 
 namespace utime
 {
-    void UClock::split(const std::string& lhs,const std::string& rhs,std::vector<std::string>& vecStr)
+    void split(const std::string& lhs,const std::string& rhs,std::vector<std::string>& vecStr)
     {
         vecStr.clear();
         size_t last = 0;

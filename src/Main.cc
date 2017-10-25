@@ -13,7 +13,7 @@
 
 #include"GuiResources.h"
 #include"TimerEventSystem.h"
-
+#include"i18nText.h"
 
 
 using namespace cv;
@@ -34,19 +34,26 @@ int main(int argc,char** argv)
     GuiResources resources; 
     resources.start();
     
+    i18nText message;
+    message.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
+    message.setSize(60);
+    
+    i18nText weather;
+    weather.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
+    weather.setSize(50);
+
     while(1)
     {
         putText(img,resources.getClock_MouthAndDays(),Point(100,700),FONT_HERSHEY_SIMPLEX,3,Scalar(255,255,255),3);
         std::cout << "getClock_MouthAndDays: " << resources.getClock_MouthAndDays() << std::endl;
         putText(img,resources.getClock_HourAndMinutes(),Point(100,800),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
         std::cout << "getClock_HourAndMinutes: " << resources.getClock_HourAndMinutes() << std::endl;
-        putText(img,resources.getWeather(),Point(1200,200),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
-        std::cout << "weather: " << resources.getWeather() << std::endl; 
-        putText(img,resources.getBook(),Point(1200,800),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
-        std::cout << "weather: " << resources.getWeather() << std::endl; 
-        putText(img,resources.getPhone(),Point(100,200),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
-        std::cout << "weather: " << resources.getWeather() << std::endl; 
         
+        weather.putText(img,resources.getWeather(),Point(200,200),CV_RGB(255,255,255));
+        std::cout << "weather: " << resources.getWeather() << std::endl; 
+        message.putText(img,resources.getMessage(),Point(550,450),CV_RGB(255,255,255));
+        std::cout << "message: " << resources.getMessage() << std::endl;
+
         imshow("home",img);
         waitKey(999);
         img.setTo(Scalar(0,0,0));
