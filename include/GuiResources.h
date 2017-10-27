@@ -28,13 +28,20 @@ class GuiResources final
         const std::string&  getClock_MouthAndDays()
         {return clock.getMouthAndDays();};
         
-        const wchar_t* getWeather()
-        {return weather.c_str();};
+        const wchar_t* getWeatherToday()
+        {return weatherToday.c_str();};
         
+        const wchar_t* getWeatherTomorrow()
+        {return weatherTomorrow.c_str();};
+
+        const wchar_t* getWeatherAfterTomorrow()
+        {return weatherAfterTomorrow.c_str();};
+
         const wchar_t* getMessage()
         {return message.c_str();};
 
         void start();
+        void init();
 
     private:
         void ClockUpdate();
@@ -46,7 +53,9 @@ class GuiResources final
         unet::net::TimerEventSystem system;
         utime::UClock clock;
         
-        std::wstring weather;
+        std::wstring weatherToday;
+        std::wstring weatherTomorrow;
+        std::wstring weatherAfterTomorrow;
         std::wstring message;
 };
 

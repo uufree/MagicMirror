@@ -47,30 +47,43 @@ void GuiResources::WeatherUpdate()
 {
     std::string weather_;
     std::vector<std::string> strList;
-    std::vector<std::string> strList_;
+    std::vector<std::wstring> wstrList;
 
     ::system("python /home/uuchen/magicMirror/script/Weather.py");
     unet::file::File weatherF("/home/uuchen/magicMirror/build/weather.csv",unet::file::READ);
     unet::file::readn(weatherF.getFd(),weather_,256);
     ::system("rm /home/uuchen/magicMirror/build/weather.csv");
     utime::split(weather_,"\n",strList);
-//    std::cout << strList[0] << std::endl << strList[1] << std::endl << strList[2] << std::endl;
     
-    weather_.clear();
-    strList_.clear();
-    utime::split(strList[0],",",strList_);
-    weather_ = "当前：" + strList_[3] + "\n";
-    weather_.append(strList[1]);
-    weather_.append("\n");
-    weather_.append(strList[2]);
-//    std::cout << weather_ << std::endl;
-
     wchar_t temp[128];
-    mbstowcs(temp,weather_.c_str(),weather_.size());
+    std::vector<std::string> strListTemp;
+    std::string strTemp;
+
+    for(int i=0;i<3;++i)
+    {
+        memset(temp,'\0',128);
+        utime::split(strList[i],",",strListTemp); 
+        strListTemp[3] = strListTemp[3].substr(0,strListTemp[3].size()-4);
+
+        strTemp.clear();
+        strTemp.append(strListTemp[0]);
+        strTemp.append(",");
+        strTemp.append(strListTemp[1]);
+        strTemp.append(",");
+        strTemp.append(strListTemp[3]);
+        strTemp.append("～");
+        strTemp.append(strListTemp[2]);
+        strTemp.append("摄氏度");
+
+        mbstowcs(temp,strTemp.c_str(),strTemp.size());
+        wstrList.push_back(temp);
+    }
+    
     {
         unet::thread::MutexLockGuard guard(lock);
-        std::wstring wstr(temp);
-        weather = temp;
+        weatherToday = wstrList[0];
+        weatherTomorrow = wstrList[1];
+        weatherAfterTomorrow = wstrList[2];
     }
 }
 
@@ -90,6 +103,14 @@ void GuiResources::MessageUpdate()
         message = eveningMessage[rand() % MessageSize];
 }
 
+void GuiResources::init()
+{
+    ClockUpdate();
+    WeatherUpdate();
+    MessageUpdate();
+}
+
+
 void GuiResources::start()
 {
     system.start();
@@ -100,7 +121,7 @@ void GuiResources::start()
     }
 
     {//weather
-        unet::time::TimerPtr ptr(new unet::time::Timer(true,5));
+        unet::time::TimerPtr ptr(new unet::time::Timer(true,5400));
         ptr->setTimeCallBack(std::bind(&GuiResources::WeatherUpdate,this));
         system.addTimer(std::move(ptr));
     }

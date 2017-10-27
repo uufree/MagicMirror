@@ -32,28 +32,43 @@ int main(int argc,char** argv)
     setWindowProperty("home",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
     
     GuiResources resources; 
+    resources.init();
     resources.start();
     
     i18nText message;
     message.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
     message.setSize(60);
     
-    i18nText weather;
-    weather.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
-    weather.setSize(50);
-
+    i18nText weatherToday;
+    weatherToday.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
+    weatherToday.setSize(50);
+    
+    i18nText weatherTomorrow;
+    weatherTomorrow.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
+    weatherTomorrow.setSize(40);
+    
+    i18nText weatherAfterTomorrow;
+    weatherAfterTomorrow.setFont("/usr/share/fonts/truetype/wqy/wqy-microhei.ttc");
+    weatherAfterTomorrow.setSize(40);
+    
     while(1)
     {
+        weatherToday.putText(img,resources.getWeatherToday(),Point(800,100),CV_RGB(255,255,255));
+        std::cout << "weatherToday: " << resources.getWeatherToday() << std::endl; 
+        weatherTomorrow.putText(img,resources.getWeatherTomorrow(),Point(800,150),CV_RGB(255,255,255));
+        std::cout << "weatherTomorrow: " << resources.getWeatherTomorrow() << std::endl; 
+        weatherAfterTomorrow.putText(img,resources.getWeatherAfterTomorrow(),Point(800,200),CV_RGB(255,255,255));
+        std::cout << "weatherAfterTomorrow: " << resources.getWeatherAfterTomorrow() << std::endl; 
+        
         putText(img,resources.getClock_MouthAndDays(),Point(100,700),FONT_HERSHEY_SIMPLEX,3,Scalar(255,255,255),3);
         std::cout << "getClock_MouthAndDays: " << resources.getClock_MouthAndDays() << std::endl;
         putText(img,resources.getClock_HourAndMinutes(),Point(100,800),FONT_HERSHEY_SIMPLEX,2,Scalar(255,255,255),3);
         std::cout << "getClock_HourAndMinutes: " << resources.getClock_HourAndMinutes() << std::endl;
         
-        weather.putText(img,resources.getWeather(),Point(200,200),CV_RGB(255,255,255));
-        std::cout << "weather: " << resources.getWeather() << std::endl; 
-        message.putText(img,resources.getMessage(),Point(550,450),CV_RGB(255,255,255));
+        message.putText(img,resources.getMessage(),Point(450,450),CV_RGB(255,255,255));
         std::cout << "message: " << resources.getMessage() << std::endl;
-
+        
+        
         imshow("home",img);
         waitKey(999);
         img.setTo(Scalar(0,0,0));
